@@ -185,6 +185,12 @@ export const Profile = () => {
         average_sleep_duration: userProfile.average_sleep_duration ?? '7.5',
         daily_activity_level: userProfile.daily_activity_level || ''
       });
+    } else if (currentUser) {
+      setFormData((prev) => ({
+        ...prev,
+        name: currentUser.name || '',
+        fitness_goal: currentUser.goal || 'Muscle Gain'
+      }));
     }
     setValidationError('');
     setSuccessMessage('');
@@ -267,6 +273,15 @@ export const Profile = () => {
     return null;
   };
 
+  // Safely extract initials from athlete name
+  const getAthleteInitials = (name) => {
+    if (!name || typeof name !== 'string') return 'A';
+    const clean = name.trim();
+    if (!clean) return 'A';
+    const parts = clean.split(/\s+/).filter(Boolean);
+    return parts.map((n) => n[0]).join('').slice(0, 2).toUpperCase() || 'A';
+  };
+
   const calculatedProgress = calculateProgress();
 
   return (
@@ -276,13 +291,7 @@ export const Profile = () => {
         <div className="profile-header-card">
           <div className="profile-user-info">
             <div className="profile-avatar-large">
-              {currentUser?.name
-                ? currentUser.name
-                    .split(' ')
-                    .map((n) => n[0])
-                    .slice(0, 2)
-                    .join('')
-                : 'A'}
+              {getAthleteInitials(userProfile?.name || currentUser?.name)}
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
@@ -291,7 +300,7 @@ export const Profile = () => {
                 <span className="badge badge-cyan">Supabase Synced</span>
               </div>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                {currentUser?.email} • ID: <code style={{ color: 'var(--accent-primary)', fontSize: '0.8rem' }}>{session?.user?.id?.slice(0, 8)}...</code>
+                {currentUser?.email || session?.user?.email || 'Authenticated Athlete'} • ID: <code style={{ color: 'var(--accent-primary)', fontSize: '0.8rem' }}>{session?.user?.id ? session.user.id.slice(0, 8) : '--------'}...</code>
               </p>
             </div>
           </div>
@@ -410,7 +419,7 @@ export const Profile = () => {
                       />
                     </div>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                      Calculated from starting ({userProfile.starting_weight}kg) to target ({userProfile.target_weight}kg)
+                      Calculated from starting ({userProfile?.starting_weight}kg) to target ({userProfile?.target_weight}kg)
                     </span>
                   </div>
                 ) : (
@@ -602,7 +611,7 @@ export const Profile = () => {
                 </div>
               </div>
 
-              <div className="form-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
+              <div className="form-grid-4">
                 <div className="form-group">
                   <label className="form-label">Height (cm)</label>
                   <input
@@ -857,7 +866,7 @@ export const Profile = () => {
             </div>
 
             {/* Action Buttons */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+            <div className="profile-form-actions">
               <button
                 type="button"
                 className="btn btn-secondary"

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Award, CheckCircle2, Send } from 'lucide-react';
+import { X, Award, CheckCircle2, Send, UploadCloud } from 'lucide-react';
+import '../../styles/modals.css';
 
 export const CoachApplyModal = ({ isOpen, onClose }) => {
   const [submitted, setSubmitted] = useState(false);
@@ -11,6 +12,7 @@ export const CoachApplyModal = ({ isOpen, onClose }) => {
     experienceYears: '3-5 years',
     specialization: 'Hypertrophy & Strength',
     portfolioUrl: '',
+    credentialsFile: '',
     statement: ''
   });
 
@@ -74,7 +76,7 @@ export const CoachApplyModal = ({ isOpen, onClose }) => {
             </p>
 
             <form onSubmit={handleSubmit}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-grid-2">
                 <div className="form-group">
                   <label className="form-label">Full Name *</label>
                   <input
@@ -100,21 +102,17 @@ export const CoachApplyModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-grid-2">
                 <div className="form-group">
-                  <label className="form-label">Primary Credential / Certification *</label>
-                  <select
+                  <label className="form-label">Phone Number *</label>
+                  <input
+                    type="tel"
+                    required
                     className="form-control"
-                    value={formData.certification}
-                    onChange={(e) => setFormData({ ...formData, certification: e.target.value })}
-                  >
-                    <option value="NSCA-CSCS">NSCA - CSCS (Strength & Conditioning)</option>
-                    <option value="NASM-CPT/PES">NASM - CPT / PES Performance</option>
-                    <option value="RD">Registered Dietitian (RD / CSSD)</option>
-                    <option value="ACSM-EP">ACSM - Certified Exercise Physiologist</option>
-                    <option value="USAW">USA Weightlifting (USAW L1/L2)</option>
-                    <option value="Other">Other Nationally Accredited</option>
-                  </select>
+                    placeholder="+91 98765 43210"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
                 </div>
 
                 <div className="form-group">
@@ -132,15 +130,46 @@ export const CoachApplyModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
+              <div className="form-grid-2">
+                <div className="form-group">
+                  <label className="form-label">Primary Credential / Certification *</label>
+                  <select
+                    className="form-control"
+                    value={formData.certification}
+                    onChange={(e) => setFormData({ ...formData, certification: e.target.value })}
+                  >
+                    <option value="NSCA-CSCS">NSCA - CSCS (Strength & Conditioning)</option>
+                    <option value="NASM-CPT/PES">NASM - CPT / PES Performance</option>
+                    <option value="RD">Registered Dietitian (RD / CSSD)</option>
+                    <option value="ACSM-EP">ACSM - Certified Exercise Physiologist</option>
+                    <option value="USAW">USA Weightlifting (USAW L1/L2)</option>
+                    <option value="Other">Other Nationally Accredited</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Portfolio / Social / Coaching Website</label>
+                  <input
+                    type="url"
+                    className="form-control"
+                    placeholder="https://instagram.com/coach or https://yourcoaching.com"
+                    value={formData.portfolioUrl}
+                    onChange={(e) => setFormData({ ...formData, portfolioUrl: e.target.value })}
+                  />
+                </div>
+              </div>
+
               <div className="form-group">
-                <label className="form-label">Portfolio / Social / Coaching Website URL</label>
+                <label className="form-label">Upload Certification / Credential Document (PDF or Image)</label>
                 <input
-                  type="url"
+                  type="file"
+                  accept=".pdf,.png,.jpg,.jpeg"
                   className="form-control"
-                  placeholder="https://instagram.com/coach or https://yourcoaching.com"
-                  value={formData.portfolioUrl}
-                  onChange={(e) => setFormData({ ...formData, portfolioUrl: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, credentialsFile: e.target.files?.[0]?.name || '' })}
                 />
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.35rem', display: 'block' }}>
+                  Optional: Attach certification audit credentials for expedited verification (Max 10MB).
+                </span>
               </div>
 
               <div className="form-group">
@@ -154,7 +183,7 @@ export const CoachApplyModal = ({ isOpen, onClose }) => {
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
                 <button type="button" className="btn btn-secondary" onClick={onClose}>
                   Cancel
                 </button>
