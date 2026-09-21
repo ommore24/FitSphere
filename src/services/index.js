@@ -1,0 +1,6 @@
+export { supabase, isSupabaseConfigured } from '../lib/supabase';
+export { authService } from './authService';
+export { productsService } from './productsService';
+export { journeyService } from './journeyService';
+export { coachesService } from './coachesService';
+export { storageService } from './storageService';
