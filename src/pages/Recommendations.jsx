@@ -168,7 +168,7 @@ export const Recommendations = () => {
                 </h4>
                 <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontWeight: 800, color: 'var(--accent-primary)', fontSize: '1.1rem' }}>
-                    ${item.price.toFixed(2)}
+                    ₹{item.price.toLocaleString('en-IN')}
                   </span>
                   <span className="badge badge-neutral" style={{ fontSize: '0.7rem' }}>
                     Included in Stack
@@ -184,10 +184,10 @@ export const Recommendations = () => {
               <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Complete Stack Bundle Total:</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
                 <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-heading)' }}>
-                  ${currentRecommendation.totalPrice.toFixed(2)}
+                  ₹{currentRecommendation.totalPrice.toLocaleString('en-IN')}
                 </span>
                 <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', fontSize: '1rem' }}>
-                  ${currentRecommendation.originalTotalPrice.toFixed(2)}
+                  ₹{currentRecommendation.originalTotalPrice.toLocaleString('en-IN')}
                 </span>
               </div>
             </div>

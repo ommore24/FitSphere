@@ -1,155 +1,208 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { authService } from '../services/authService';
+import { profileService } from '../services/profileService';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState({
-    name: 'Alex Rivera',
-    email: 'alex.rivera@fitsphere.com',
-    role: 'athlete',
-    tier: 'FitSphere Pro',
-    goal: 'Lean Hypertrophy & Strength',
-    streak: 19,
-    joinedDate: 'January 2025',
-    savedAddressesCount: 2,
-    completedWorkouts: 48
-  });
-
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Synchronize with Supabase Auth session if present
+  /**
+   * Builds an immediate fallback athlete user object from Supabase auth user
+   */
+  const buildInitialUser = (user) => {
+    if (!user) return null;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'Athlete'),
+      role: user.user_metadata?.role || 'athlete',
+      goal: user.user_metadata?.primary_goal || 'General Fitness',
+      tier: 'FitSphere Pro'
+    };
+  };
+
+  /**
+   * Loads the athlete profile from Supabase PostgreSQL
+   */
+  const loadUserProfile = useCallback(async (userId, userEmail, userMetadata) => {
+    try {
+      const { data: profile, error } = await profileService.getProfile(userId);
+      
+      const basicUser = {
+        id: userId,
+        email: userEmail,
+        name: profile?.name || userMetadata?.full_name || (userEmail ? userEmail.split('@')[0] : 'Athlete'),
+        role: userMetadata?.role || 'athlete',
+        goal: profile?.fitness_goal || userMetadata?.primary_goal || 'General Fitness',
+        tier: 'FitSphere Pro'
+      };
+
+      setCurrentUser(basicUser);
+      setUserProfile(profile || null);
+    } catch (err) {
+      console.error('Error loading athlete profile:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /**
+   * Refreshes the active profile from Supabase
+   */
+  const refreshProfile = useCallback(async () => {
+    if (!session?.user?.id) return null;
+    const { data: profile, error } = await profileService.getProfile(session.user.id);
+    if (!error && profile) {
+      setUserProfile(profile);
+      setCurrentUser((prev) => ({
+        ...prev,
+        name: profile.name || prev?.name || 'Athlete',
+        goal: profile.fitness_goal || prev?.goal || 'General Fitness'
+      }));
+      return profile;
+    }
+    return null;
+  }, [session]);
+
+  // Synchronize on mount and handle auth state transitions
   useEffect(() => {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
 
-    // Check current active session
+    let mounted = true;
+
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
       if (session?.user) {
+        const initialUser = buildInitialUser(session.user);
+        setCurrentUser(initialUser);
         setSession(session);
         setIsAuthenticated(true);
-        setCurrentUser((prev) => ({
-          ...prev,
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.user_metadata?.full_name || session.user.email.split('@')[0],
-          goal: session.user.user_metadata?.primary_goal || prev.goal
-        }));
+        loadUserProfile(session.user.id, session.user.email, session.user.user_metadata);
+      } else {
+        setSession(null);
+        setCurrentUser(null);
+        setUserProfile(null);
+        setIsAuthenticated(false);
+        setLoading(false);
       }
     });
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setSession(session);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      if (!mounted) return;
+      if (currentSession?.user) {
+        const initialUser = buildInitialUser(currentSession.user);
+        setCurrentUser(initialUser);
+        setSession(currentSession);
         setIsAuthenticated(true);
-        setCurrentUser((prev) => ({
-          ...prev,
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.user_metadata?.full_name || session.user.email.split('@')[0],
-          goal: session.user.user_metadata?.primary_goal || prev.goal
-        }));
-      } else if (_event === 'SIGNED_OUT') {
+        await loadUserProfile(currentSession.user.id, currentSession.user.email, currentSession.user.user_metadata);
+      } else {
         setSession(null);
+        setCurrentUser(null);
+        setUserProfile(null);
         setIsAuthenticated(false);
+        setLoading(false);
       }
     });
 
     return () => {
+      mounted = false;
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [loadUserProfile]);
 
+  /**
+   * Sign in with Supabase credentials
+   */
   const login = async (email, password) => {
-    setLoading(true);
-
-    // If Supabase is active, attempt real Supabase sign in
-    if (isSupabaseConfigured) {
-      try {
-        const { data, error } = await authService.signIn({ email, password });
-        if (!error && data?.session) {
-          setLoading(false);
-          return { success: true, data };
-        }
-      } catch (err) {
-        console.warn('Supabase signIn error, keeping session for Part 1 demo:', err);
-      }
+    if (!isSupabaseConfigured) {
+      return { success: false, error: new Error('Supabase is not configured.') };
     }
 
-    // Smooth demo fallback preserving Part 1 UX
-    setIsAuthenticated(true);
-    setCurrentUser((prev) => ({
-      ...prev,
-      email: email || 'alex.rivera@fitsphere.com',
-      name: email ? email.split('@')[0] : 'Alex Rivera'
-    }));
-    setLoading(false);
-    return { success: true };
+    const { data, error } = await authService.signIn({ email, password });
+    if (error) {
+      return { success: false, error };
+    }
+
+    if (data?.session?.user) {
+      const initialUser = buildInitialUser(data.session.user);
+      setCurrentUser(initialUser);
+      setSession(data.session);
+      setIsAuthenticated(true);
+      await loadUserProfile(data.session.user.id, data.session.user.email, data.session.user.user_metadata);
+    }
+
+    return { success: true, data };
   };
 
+  /**
+   * Sign out session and purge private profile data from memory
+   */
   const logout = async () => {
     if (isSupabaseConfigured) {
-      try {
-        await authService.signOut();
-      } catch (err) {
-        console.warn('Supabase signOut error:', err);
-      }
+      await authService.signOut();
     }
     setSession(null);
+    setCurrentUser(null);
+    setUserProfile(null);
     setIsAuthenticated(false);
+    setLoading(false);
   };
 
+  /**
+   * Sign up a new user with Supabase
+   */
   const register = async (userData) => {
-    setLoading(true);
-
-    if (isSupabaseConfigured && userData.email && userData.password) {
-      try {
-        const { data, error } = await authService.signUp({
-          email: userData.email,
-          password: userData.password,
-          fullName: userData.name,
-          primaryGoal: userData.goal
-        });
-        if (!error && data?.user) {
-          setLoading(false);
-          return { success: true, data };
-        }
-      } catch (err) {
-        console.warn('Supabase signUp error, keeping session for Part 1 demo:', err);
-      }
+    if (!isSupabaseConfigured) {
+      return { success: false, error: new Error('Supabase is not configured.') };
     }
 
-    // Fallback preserving Part 1 registration flow
-    setIsAuthenticated(true);
-    setCurrentUser({
-      name: userData.name || 'New Athlete',
+    const { data, error } = await authService.signUp({
       email: userData.email,
-      role: 'athlete',
-      tier: 'FitSphere Explorer',
-      goal: userData.goal || 'General Fitness',
-      streak: 1,
-      joinedDate: 'Just now',
-      savedAddressesCount: 0,
-      completedWorkouts: 0
+      password: userData.password,
+      fullName: userData.name,
+      primaryGoal: userData.goal
     });
-    setLoading(false);
-    return { success: true };
+
+    if (error) {
+      return { success: false, error };
+    }
+
+    // If session was established immediately
+    if (data?.session?.user) {
+      const initialUser = buildInitialUser(data.session.user);
+      setCurrentUser(initialUser);
+      setSession(data.session);
+      setIsAuthenticated(true);
+      await loadUserProfile(data.session.user.id, data.session.user.email, data.session.user.user_metadata);
+    }
+
+    return { success: true, data };
   };
 
   return (
     <AuthContext.Provider
       value={{
-        currentUser,
-        isAuthenticated,
         session,
+        currentUser,
+        userProfile,
+        isAuthenticated,
         loading,
         isSupabaseConfigured,
         login,
         logout,
-        register
+        register,
+        refreshProfile
       }}
     >
       {children}

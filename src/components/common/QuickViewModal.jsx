@@ -69,9 +69,9 @@ export const QuickViewModal = ({ product, isOpen, onClose }) => {
             </div>
 
             <div className="quick-view-price-row">
-              <span className="quick-view-current-price">${product.price.toFixed(2)}</span>
+              <span className="quick-view-current-price">₹{product.price.toLocaleString('en-IN')}</span>
               {product.originalPrice && (
-                <span className="quick-view-original-price">${product.originalPrice.toFixed(2)}</span>
+                <span className="quick-view-original-price">₹{product.originalPrice.toLocaleString('en-IN')}</span>
               )}
               <span className="badge badge-mint">In Stock & Verified</span>
             </div>

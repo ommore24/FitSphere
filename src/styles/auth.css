@@ -113,9 +113,12 @@
   font-weight: 700;
 }
 
-/* User Profile Layout */
+/* =========================================================
+   USER PROFILE & PERSONAL DASHBOARD (PART 2)
+   ========================================================= */
+
 .profile-container {
-  padding: 3rem 0 5rem;
+  padding: 2.5rem 0 5rem;
 }
 
 .profile-header-card {
@@ -128,7 +131,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .profile-user-info {
@@ -151,33 +154,174 @@
   box-shadow: 0 8px 24px var(--accent-primary-glow);
 }
 
-.profile-meta-grid {
+/* Profile Mode Navigation Tabs */
+.profile-nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.4rem;
+  margin-bottom: 2.5rem;
+  overflow-x: auto;
+}
+
+.profile-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.profile-tab-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.profile-tab-btn.active {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 14px var(--accent-primary-glow);
+}
+
+/* Personal Dashboard Metrics Grid */
+.dashboard-overview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2.5rem;
 }
 
-.profile-stat-box {
+.dashboard-stat-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all var(--transition-normal);
 }
 
-.profile-stat-box h4 {
-  font-size: 1.35rem;
-  margin-bottom: 0.2rem;
+.dashboard-stat-card:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
 }
 
-.profile-sections-grid {
+.dashboard-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-stat-title {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.dashboard-stat-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #fff;
+  font-family: var(--font-heading);
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+}
+
+.dashboard-stat-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+/* Goal Progress Showcase Card */
+.dashboard-goal-banner {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(26, 34, 52, 0.9));
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem;
+  margin-bottom: 2.5rem;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1.4fr 1fr;
   gap: 2rem;
+  align-items: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Form Sections */
+.form-section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem;
+  margin-bottom: 2rem;
+}
+
+.form-section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.form-section-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 1.75rem;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* Safety & Privacy Disclaimer */
+.safety-disclaimer-box {
+  background: rgba(0, 229, 255, 0.04);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  margin-top: 3rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.safety-disclaimer-text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .dashboard-goal-banner {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .profile-sections-grid {
+  .form-grid-2,
+  .form-grid-3 {
     grid-template-columns: 1fr;
   }
 }

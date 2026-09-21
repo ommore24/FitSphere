@@ -1,4 +1,4 @@
-// FitSphere Verified Coaches Data
+// FitSphere Verified Coaches Data (Rates in Indian Rupees ₹ / INR)
 
 export const MOCK_COACHES = [
   {
@@ -11,7 +11,7 @@ export const MOCK_COACHES = [
     rating: 4.98,
     reviews: 215,
     activeClients: 42,
-    sessionRate: '$95/hr',
+    sessionRate: '₹2,499/hr',
     bio: 'Former collegiate strength coach specializing in biomechanics, clean mass acquisition, and injury-free progressive overload programming.',
     avatarBg: 'linear-gradient(135deg, #0F766E, #115E59)'
   },
@@ -25,7 +25,7 @@ export const MOCK_COACHES = [
     rating: 4.95,
     reviews: 184,
     activeClients: 38,
-    sessionRate: '$110/hr',
+    sessionRate: '₹2,999/hr',
     bio: 'Tailors bio-individualized micronutrient balance, gut health protocols, and high-performance fuel regimens for natural athletes.',
     avatarBg: 'linear-gradient(135deg, #854D0E, #713F12)'
   },
@@ -39,7 +39,7 @@ export const MOCK_COACHES = [
     rating: 4.92,
     reviews: 140,
     activeClients: 30,
-    sessionRate: '$85/hr',
+    sessionRate: '₹1,999/hr',
     bio: 'Blends functional strength with VO2 max conditioning to build resilient, injury-proof human engines ready for any athletic challenge.',
     avatarBg: 'linear-gradient(135deg, #1E3A8A, #172554)'
   }

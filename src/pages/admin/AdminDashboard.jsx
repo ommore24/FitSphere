@@ -114,7 +114,7 @@ export const AdminDashboard = () => {
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
               Gross Merchandise Value (GMV)
             </span>
-            <h3 style={{ color: 'var(--accent-primary)' }}>$142,840</h3>
+            <h3 style={{ color: 'var(--accent-primary)' }}>₹14,28,400</h3>
             <span style={{ fontSize: '0.78rem', color: 'var(--accent-primary)' }}>+18.4% this month</span>
           </div>
 

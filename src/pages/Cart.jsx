@@ -15,7 +15,7 @@ import { useCart } from '../context/CartContext';
 export const Cart = () => {
   const { cart, removeFromCart, updateQuantity, cartCount, cartSubtotal, clearCart } = useCart();
 
-  const shipping = cartSubtotal > 50 || cart.length === 0 ? 0 : 7.99;
+  const shipping = cartSubtotal > 999 || cart.length === 0 ? 0 : 99;
   const grandTotal = cartSubtotal + shipping;
 
   return (
@@ -87,7 +87,7 @@ export const Cart = () => {
                     </div>
                     <h3 style={{ fontSize: '1.05rem', color: '#fff', margin: '0.2rem 0' }}>{product.name}</h3>
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                      ${product.price.toFixed(2)} each
+                      ₹{product.price.toLocaleString('en-IN')} each
                     </div>
                   </div>
 
@@ -115,7 +115,7 @@ export const Cart = () => {
                   {/* Subtotal for this item */}
                   <div style={{ textAlign: 'right', minWidth: '85px' }}>
                     <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-heading)' }}>
-                      ${(product.price * quantity).toFixed(2)}
+                      ₹{(product.price * quantity).toLocaleString('en-IN')}
                     </div>
                     <button
                       onClick={() => removeFromCart(product.id)}
@@ -145,11 +145,11 @@ export const Cart = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.92rem', paddingBottom: '1.25rem', borderBottom: '1px solid var(--border-subtle)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Item Subtotal</span>
-                  <span style={{ fontWeight: 700 }}>${cartSubtotal.toFixed(2)}</span>
+                  <span style={{ fontWeight: 700 }}>₹{cartSubtotal.toLocaleString('en-IN')}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Estimated Shipping</span>
-                  <span>{shipping === 0 ? <strong style={{ color: 'var(--accent-primary)' }}>FREE</strong> : `$${shipping.toFixed(2)}`}</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>Estimated Delivery</span>
+                  <span>{shipping === 0 ? <strong style={{ color: 'var(--accent-primary)' }}>FREE</strong> : `₹${shipping}`}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Authenticity Verification</span>
@@ -158,16 +158,16 @@ export const Cart = () => {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', margin: '1.25rem 0 1.75rem' }}>
-                <span style={{ fontSize: '1.1rem', fontWeight: 700 }}>Total (USD)</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 700 }}>Total (INR)</span>
                 <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-primary)', fontFamily: 'var(--font-heading)' }}>
-                  ${grandTotal.toFixed(2)}
+                  ₹{grandTotal.toLocaleString('en-IN')}
                 </span>
               </div>
 
               <button
                 className="btn btn-primary btn-lg"
                 style={{ width: '100%' }}
-                onClick={() => alert('Part 1 Preview: Full checkout payment gateway (Stripe/PayPal) will be integrated in subsequent parts.')}
+                onClick={() => alert('Checkout payment gateway will be integrated in subsequent parts.')}
               >
                 <span>Proceed to Checkout</span>
                 <ArrowRight size={18} />

@@ -498,7 +498,7 @@ export const FitnessJourney = () => {
               </div>
 
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff' }}>$19<span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/mo</span></div>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff' }}>₹1,499<span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/mo</span></div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--accent-primary)', fontWeight: 600, marginBottom: '1rem' }}>Renews October 2026</div>
                 <button className="btn btn-secondary" style={{ width: '100%' }}>Manage Pro Plan</button>
               </div>

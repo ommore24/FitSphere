@@ -36,6 +36,21 @@ export const Navbar = () => {
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
+  const getUserInitials = (user) => {
+    if (!user || !user.name || typeof user.name !== 'string') return 'U';
+    const clean = user.name.trim();
+    if (!clean) return 'U';
+    const parts = clean.split(/\s+/).filter(Boolean);
+    return parts.map((n) => n[0]).join('').slice(0, 2).toUpperCase() || 'U';
+  };
+
+  const getUserFirstName = (user) => {
+    if (!user || !user.name || typeof user.name !== 'string') return 'Athlete';
+    const clean = user.name.trim();
+    if (!clean) return 'Athlete';
+    return clean.split(/\s+/)[0] || 'Athlete';
+  };
+
   return (
     <>
       <header className="navbar">
@@ -148,15 +163,10 @@ export const Navbar = () => {
                 onClick={closeMobileMenu}
               >
                 <div className="nav-avatar-circle">
-                  {currentUser.name
-                    ? currentUser.name
-                        .split(' ')
-                        .map((n) => n[0])
-                        .join('')
-                    : 'U'}
+                  {getUserInitials(currentUser)}
                 </div>
                 <span style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {currentUser.name.split(' ')[0]}
+                  {getUserFirstName(currentUser)}
                 </span>
               </Link>
             ) : (

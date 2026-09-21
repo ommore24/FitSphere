@@ -1,4 +1,4 @@
-// FitSphere Goal-Based Recommendations Matrix
+// FitSphere Goal-Based Recommendations Matrix (Prices in Indian Rupees ₹ / INR)
 
 export const GOAL_OPTIONS = [
   {
@@ -49,29 +49,29 @@ export const GOAL_RECOMMENDATIONS_DATA = {
     title: 'The Clean Hypertrophy Power Stack',
     headline: 'Engineered for rapid muscular protein synthesis and progressive overload recovery.',
     bundleDiscount: 'Save 15% Bundle Pricing',
-    totalPrice: 128.98,
-    originalTotalPrice: 151.98,
+    totalPrice: 9347,
+    originalTotalPrice: 10997,
     products: [
       {
         id: 'prod-1',
         name: 'Gold Standard 100% Whey Isolate',
         brand: 'Optimum Nutrition',
         role: 'Post-Workout Rapid Amino Inflow',
-        price: 64.99
+        price: 6499
       },
       {
         id: 'prod-2',
         name: 'Creapure® Micronized Creatine',
         brand: 'Thorne Research',
         role: 'ATP Regeneration & Power Capacity',
-        price: 38.00
+        price: 2999
       },
       {
         id: 'prod-3',
         name: 'Apex Seamless Lifting Straps',
         brand: 'Gymshark',
         role: 'Grip Fatigue Elimination for Overload',
-        price: 24.50
+        price: 1499
       }
     ],
     workoutProtocol: {
@@ -90,29 +90,29 @@ export const GOAL_RECOMMENDATIONS_DATA = {
     title: 'The Thermogenic Shred & Lean Definition Stack',
     headline: 'Formulated to protect muscle tissue during a calorie deficit while fueling intense sessions.',
     bundleDiscount: 'Save 18% Bundle Pricing',
-    totalPrice: 114.98,
-    originalTotalPrice: 140.97,
+    totalPrice: 9599,
+    originalTotalPrice: 11797,
     products: [
       {
         id: 'prod-4',
         name: 'Pre-Kaged Elite Ultra Pre-Workout',
         brand: 'Kaged Muscle',
         role: 'High Energy & Focus in Caloric Deficit',
-        price: 59.99
+        price: 4999
       },
       {
         id: 'prod-8',
         name: 'Impact Whey Protein Isolate Natural',
         brand: 'MyProtein',
         role: 'Zero Sugar High-Protein Satiety',
-        price: 45.99
+        price: 4299
       },
       {
         id: 'prod-5',
         name: 'High Protein Soft Crisp Bars',
         brand: 'Barebells',
         role: 'Guilt-Free High Protein Snack',
-        price: 32.99
+        price: 2499
       }
     ],
     workoutProtocol: {
@@ -131,29 +131,29 @@ export const GOAL_RECOMMENDATIONS_DATA = {
     title: 'The Hyrox & Tri-Endurance Engine Stack',
     headline: 'Optimized for cellular hydration, mitochondrial efficiency, and sustained tempo output.',
     bundleDiscount: 'Save 12% Bundle Pricing',
-    totalPrice: 104.98,
-    originalTotalPrice: 119.98,
+    totalPrice: 6773,
+    originalTotalPrice: 7697,
     products: [
       {
         id: 'prod-2',
         name: 'Creapure® Micronized Creatine',
         brand: 'Thorne Research',
         role: 'Cellular Hydration & Anaerobic Glycolysis',
-        price: 38.00
+        price: 2999
       },
       {
         id: 'prod-7',
         name: 'Essential Multivitamin 3-in-1',
         brand: 'Thorne Research',
         role: 'Electrolyte & Micronutrient Replenishment',
-        price: 42.00
+        price: 3199
       },
       {
         id: 'prod-3',
         name: 'Apex Seamless Lifting Straps',
         brand: 'Gymshark',
         role: 'Ergonomic Support & Functional Pulls',
-        price: 24.50
+        price: 1499
       }
     ],
     workoutProtocol: {
@@ -172,29 +172,29 @@ export const GOAL_RECOMMENDATIONS_DATA = {
     title: 'The Cellular Vitality & Longevity Protocol',
     headline: 'Designed to support joint integrity, restorative deep sleep, and natural hormone balance.',
     bundleDiscount: 'Save 15% Bundle Pricing',
-    totalPrice: 122.99,
-    originalTotalPrice: 144.99,
+    totalPrice: 10367,
+    originalTotalPrice: 12197,
     products: [
       {
         id: 'prod-7',
         name: 'Essential Multivitamin 3-in-1',
         brand: 'Thorne Research',
         role: 'Bioavailable Methylated Cellular Cofactors',
-        price: 42.00
+        price: 3199
       },
       {
         id: 'prod-1',
         name: 'Gold Standard 100% Whey Isolate',
         brand: 'Optimum Nutrition',
         role: 'Sarcopenia Defense & Lean Mass Preservation',
-        price: 64.99
+        price: 6499
       },
       {
         id: 'prod-5',
         name: 'High Protein Soft Crisp Bars',
         brand: 'Barebells',
         role: 'Low Glycemic Satiety Snack',
-        price: 32.99
+        price: 2499
       }
     ],
     workoutProtocol: {

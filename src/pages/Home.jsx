@@ -358,20 +358,20 @@ export const Home = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                     <span style={{ fontWeight: 600 }}>Gold Standard 100% Whey Isolate</span>
-                    <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>$64.99</span>
+                    <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>₹6,499</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                     <span style={{ fontWeight: 600 }}>Creapure® Micronized Creatine</span>
-                    <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>$38.00</span>
+                    <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>₹2,999</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                     <span style={{ fontWeight: 600 }}>Apex Lifting Straps</span>
-                    <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>$24.50</span>
+                    <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>₹1,499</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
                   <span style={{ fontWeight: 700 }}>Full Stack Price (15% Off):</span>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-primary)' }}>$128.98</span>
+                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-primary)' }}>₹9,347</span>
                 </div>
               </div>
             </div>
@@ -499,7 +499,7 @@ export const Home = () => {
                 Membership Tier
               </span>
               <div style={{ fontSize: '3rem', fontWeight: 800, color: '#fff', margin: '0.5rem 0', fontFamily: 'var(--font-heading)' }}>
-                $19<span style={{ fontSize: '1.1rem', color: 'var(--text-muted)', fontWeight: 500 }}>/month</span>
+                ₹1,499<span style={{ fontSize: '1.1rem', color: 'var(--text-muted)', fontWeight: 500 }}>/month</span>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
                 Cancel anytime. 14-day risk-free athletic satisfaction trial.

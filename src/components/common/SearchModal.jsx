@@ -122,7 +122,7 @@ export const SearchModal = ({ isOpen, onClose, onSelectProduct }) => {
                         <div style={{ fontWeight: 700, color: '#fff' }}>{prod.name}</div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span style={{ fontWeight: 800, color: '#fff' }}>${prod.price.toFixed(2)}</span>
+                        <span style={{ fontWeight: 800, color: '#fff' }}>₹{prod.price.toLocaleString('en-IN')}</span>
                         <ArrowRight size={16} color="var(--text-muted)" />
                       </div>
                     </div>
