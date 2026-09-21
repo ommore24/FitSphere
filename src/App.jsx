@@ -6,6 +6,7 @@ import { Toast } from './components/common/Toast';
 
 import { Home } from './pages/Home';
 import { Marketplace } from './pages/Marketplace';
+import { ProductDetail } from './pages/ProductDetail';
 import { FitnessJourney } from './pages/FitnessJourney';
 import { Recommendations } from './pages/Recommendations';
 import { JoinCoach } from './pages/JoinCoach';
@@ -30,6 +31,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/marketplace/:productId" element={<ProductDetail />} />
           <Route path="/fitness-journey" element={<FitnessJourney />} />
           <Route path="/recommendations" element={<Recommendations />} />
           <Route path="/join-coach" element={<JoinCoach />} />

@@ -117,6 +117,16 @@ export const QuickViewModal = ({ product, isOpen, onClose }) => {
               </button>
             </div>
 
+            <div style={{ marginTop: '0.85rem', textAlign: 'center' }}>
+              <a
+                href={`/marketplace/${product.id}`}
+                onClick={onClose}
+                style={{ fontSize: '0.84rem', color: 'var(--accent-mint)', textDecoration: 'none', fontWeight: 600 }}
+              >
+                View Full Nutrition Facts & Clinical Details →
+              </a>
+            </div>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
               <ShieldCheck size={16} color="var(--accent-primary)" />
               <span>Authentic Brand Guarantee • 30-Day Pure Performance Return Policy</span>
