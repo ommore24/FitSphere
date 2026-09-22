@@ -44,6 +44,8 @@ function formatProduct(row) {
     dietaryTags: Array.isArray(row.dietaryTags)
       ? row.dietaryTags
       : (row.product_dietary_tags ? row.product_dietary_tags.map(d => d.tag) : []),
+    reviews: Array.isArray(row.reviews) ? row.reviews : [],
+    image: row.image || (Array.isArray(row.images) && row.images[0]?.url) || '',
     images: Array.isArray(row.images)
       ? row.images
       : (row.product_images ? row.product_images.map(img => ({ url: img.image_url, alt: img.alt_text, isPrimary: img.is_primary })) : [])
@@ -62,6 +64,7 @@ function filterMockProducts({
   sortBy,
   priceMin,
   priceMax,
+  ratingMin,
   inStockOnly
 } = {}) {
   let list = [...MOCK_PRODUCTS];
@@ -90,6 +93,10 @@ function filterMockProducts({
     list = list.filter(p => p.price <= Number(priceMax));
   }
 
+  if (ratingMin !== undefined && ratingMin !== null && !isNaN(ratingMin) && Number(ratingMin) > 0) {
+    list = list.filter(p => p.rating >= Number(ratingMin));
+  }
+
   if (inStockOnly) {
     list = list.filter(p => p.inStock && p.stock > 0);
   }
@@ -100,6 +107,7 @@ function filterMockProducts({
       p.name.toLowerCase().includes(q) ||
       p.brand.toLowerCase().includes(q) ||
       p.category.toLowerCase().includes(q) ||
+      (p.tag && p.tag.toLowerCase().includes(q)) ||
       (p.description && p.description.toLowerCase().includes(q))
     );
   }
@@ -112,6 +120,8 @@ function filterMockProducts({
     list.sort((a, b) => b.rating - a.rating);
   } else if (sortBy === 'discount') {
     list.sort((a, b) => (b.discount || 0) - (a.discount || 0));
+  } else if (sortBy === 'newest') {
+    list.sort((a, b) => (b.id.localeCompare ? b.id.localeCompare(a.id) : 0));
   } else {
     // default popularity / featured
     list.sort((a, b) => (b.reviewsCount || 0) - (a.reviewsCount || 0));
@@ -159,6 +169,10 @@ export const productsService = {
         query = query.lte('price_inr', Number(filters.priceMax));
       }
 
+      if (filters.ratingMin !== undefined && filters.ratingMin !== null && !isNaN(filters.ratingMin) && Number(filters.ratingMin) > 0) {
+        query = query.gte('rating', Number(filters.ratingMin));
+      }
+
       if (filters.inStockOnly) {
         query = query.gt('stock_quantity', 0);
       }
@@ -169,6 +183,8 @@ export const productsService = {
         query = query.order('price_inr', { ascending: false });
       } else if (filters.sortBy === 'rating') {
         query = query.order('rating', { ascending: false });
+      } else if (filters.sortBy === 'popular') {
+        query = query.order('review_count', { ascending: false });
       } else {
         query = query.order('created_at', { ascending: false });
       }
@@ -182,13 +198,18 @@ export const productsService = {
 
       let formatted = data.map(formatProduct);
 
-      // Post-filter by goals and dietary tags if Supabase joins need sub-filtering
+      // Post-filter by goals, dietary tags, and rating if needed
       if (filters.goal && filters.goal !== 'All Goals') {
         formatted = formatted.filter(p => p.goals && p.goals.includes(filters.goal));
       }
       if (filters.dietaryTag && filters.dietaryTag !== 'All Diets') {
         formatted = formatted.filter(p => p.dietaryTags && p.dietaryTags.includes(filters.dietaryTag));
       }
+      if (filters.ratingMin !== undefined && filters.ratingMin !== null && !isNaN(filters.ratingMin) && Number(filters.ratingMin) > 0) {
+        formatted = formatted.filter(p => p.rating >= Number(filters.ratingMin));
+      }
+
+      return { data: formatted, error: null };
 
       return { data: formatted, error: null };
     } catch (err) {

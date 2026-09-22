@@ -13,6 +13,10 @@ import { JoinCoach } from './pages/JoinCoach';
 import { Cart } from './pages/Cart';
 import { Wishlist } from './pages/Wishlist';
 import { Legal } from './pages/Legal';
+import { Checkout } from './pages/Checkout';
+import { Orders } from './pages/Orders';
+import { Premium } from './pages/Premium';
+import { Seller } from './pages/Seller';
 
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
@@ -36,6 +40,10 @@ export function App() {
           <Route path="/recommendations" element={<Recommendations />} />
           <Route path="/join-coach" element={<JoinCoach />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/premium" element={<Premium />} />
+          <Route path="/seller" element={<Seller />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/legal" element={<Legal />} />
 

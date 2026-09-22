@@ -37,6 +37,7 @@ export const Marketplace = () => {
   const [selectedBrand, setSelectedBrand] = useState('All Brands');
   const [selectedGoal, setSelectedGoal] = useState('All Goals');
   const [selectedDietaryTag, setSelectedDietaryTag] = useState('All Diets');
+  const [selectedRating, setSelectedRating] = useState('0');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
@@ -60,6 +61,7 @@ export const Marketplace = () => {
           brand: selectedBrand,
           goal: selectedGoal,
           dietaryTag: selectedDietaryTag,
+          ratingMin: selectedRating !== '0' ? Number(selectedRating) : undefined,
           priceMin: priceRange.min !== '' ? Number(priceRange.min) : undefined,
           priceMax: priceRange.max !== '' ? Number(priceRange.max) : undefined,
           inStockOnly,
@@ -87,6 +89,7 @@ export const Marketplace = () => {
     selectedBrand,
     selectedGoal,
     selectedDietaryTag,
+    selectedRating,
     priceRange.min,
     priceRange.max,
     inStockOnly,
@@ -100,6 +103,7 @@ export const Marketplace = () => {
     setSelectedBrand('All Brands');
     setSelectedGoal('All Goals');
     setSelectedDietaryTag('All Diets');
+    setSelectedRating('0');
     setPriceRange({ min: '', max: '' });
     setInStockOnly(false);
     setSearchQuery('');
@@ -114,11 +118,12 @@ export const Marketplace = () => {
     if (selectedBrand !== 'All Brands') count++;
     if (selectedGoal !== 'All Goals') count++;
     if (selectedDietaryTag !== 'All Diets') count++;
+    if (selectedRating !== '0') count++;
     if (priceRange.min !== '' || priceRange.max !== '') count++;
     if (inStockOnly) count++;
     if (searchQuery.trim() !== '') count++;
     return count;
-  }, [selectedCategory, selectedBrand, selectedGoal, selectedDietaryTag, priceRange, inStockOnly, searchQuery]);
+  }, [selectedCategory, selectedBrand, selectedGoal, selectedDietaryTag, selectedRating, priceRange, inStockOnly, searchQuery]);
 
   return (
     <div className="section" style={{ paddingTop: '2.5rem', minHeight: '80vh' }}>
@@ -169,7 +174,7 @@ export const Marketplace = () => {
             <Search size={16} color="var(--text-muted)" />
             <input
               type="text"
-              placeholder="Search protein, creatine, brand..."
+              placeholder="Search product, brand, category..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none', width: '100%', fontSize: '0.88rem' }}
@@ -209,11 +214,12 @@ export const Marketplace = () => {
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
               >
-                <option value="featured" style={{ background: '#111827' }}>Featured / Popular</option>
+                <option value="featured" style={{ background: '#111827' }}>Relevance / Featured</option>
+                <option value="popular" style={{ background: '#111827' }}>Most Popular</option>
                 <option value="price-low" style={{ background: '#111827' }}>Price: Low to High</option>
                 <option value="price-high" style={{ background: '#111827' }}>Price: High to Low</option>
                 <option value="rating" style={{ background: '#111827' }}>Highest Rated</option>
-                <option value="discount" style={{ background: '#111827' }}>Biggest Discount</option>
+                <option value="newest" style={{ background: '#111827' }}>Newest</option>
               </select>
             </div>
 
@@ -262,6 +268,22 @@ export const Marketplace = () => {
                     {diet}
                   </option>
                 ))}
+              </select>
+            </div>
+
+            {/* Rating Filter */}
+            <div>
+              <div className="filter-group-label">Minimum Rating</div>
+              <select
+                className="filter-select"
+                style={{ width: '100%' }}
+                value={selectedRating}
+                onChange={(e) => setSelectedRating(e.target.value)}
+              >
+                <option value="0" style={{ background: '#111827' }}>All Ratings</option>
+                <option value="4" style={{ background: '#111827' }}>4.0★ & above</option>
+                <option value="4.5" style={{ background: '#111827' }}>4.5★ & above</option>
+                <option value="4.8" style={{ background: '#111827' }}>4.8★ & above</option>
               </select>
             </div>
 
@@ -355,6 +377,15 @@ export const Marketplace = () => {
               <span className="filter-chip">
                 Diet: {selectedDietaryTag}
                 <button className="filter-chip-remove" onClick={() => setSelectedDietaryTag('All Diets')}>
+                  <X size={13} />
+                </button>
+              </span>
+            )}
+
+            {selectedRating !== '0' && (
+              <span className="filter-chip">
+                Rating: {selectedRating}★+
+                <button className="filter-chip-remove" onClick={() => setSelectedRating('0')}>
                   <X size={13} />
                 </button>
               </span>

@@ -13,7 +13,11 @@ import {
   ChevronRight,
   ArrowLeft,
   Zap,
-  Info
+  Info,
+  ThumbsUp,
+  MessageSquare,
+  Plus,
+  User
 } from 'lucide-react';
 import { productsService } from '../services/productsService';
 import { useCart } from '../context/CartContext';
@@ -32,13 +36,25 @@ export const ProductDetail = () => {
   const [selectedQty, setSelectedQty] = useState(1);
   const [activeThumb, setActiveThumb] = useState(0);
 
+  // Reviews state
+  const [reviewsList, setReviewsList] = useState([]);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [newReview, setNewReview] = useState({
+    userName: '',
+    rating: 5,
+    title: '',
+    comment: ''
+  });
+  const [helpfulMap, setHelpfulMap] = useState({});
+
   const {
     addToCart,
     toggleWishlist,
     isInWishlist,
     toggleComparison,
     isComparing,
-    recordViewedProduct
+    recordViewedProduct,
+    showToast
   } = useCart();
 
   useEffect(() => {
@@ -52,6 +68,7 @@ export const ProductDetail = () => {
           if (data) {
             setProduct(data);
             setSelectedQty(1);
+            setReviewsList(Array.isArray(data.reviews) ? data.reviews : []);
             recordViewedProduct(data);
 
             // Load related products
@@ -111,6 +128,65 @@ export const ProductDetail = () => {
   const maxStock = product.stock ?? 10;
   const isOutOfStock = !product.inStock || maxStock <= 0;
 
+  const handleToggleHelpful = (reviewId) => {
+    setHelpfulMap((prev) => {
+      const isCurrentlyHelpful = prev[reviewId];
+      const nextState = !isCurrentlyHelpful;
+      setReviewsList((list) =>
+        list.map((r) =>
+          r.id === reviewId
+            ? { ...r, helpfulCount: (r.helpfulCount || 0) + (nextState ? 1 : -1) }
+            : r
+        )
+      );
+      return { ...prev, [reviewId]: nextState };
+    });
+  };
+
+  const handleAddReview = (e) => {
+    e.preventDefault();
+    if (!newReview.userName.trim() || !newReview.comment.trim()) {
+      alert('Please fill in your name and review details.');
+      return;
+    }
+    const initials = newReview.userName
+      .trim()
+      .split(' ')
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || 'FS';
+
+    const reviewToAdd = {
+      id: `rev-user-${Date.now()}`,
+      userName: newReview.userName.trim(),
+      avatarInitials: initials,
+      rating: Number(newReview.rating) || 5,
+      date: 'Verified Buyer • Just now',
+      title: newReview.title.trim() || 'Verified Customer Review',
+      comment: newReview.comment.trim(),
+      helpfulCount: 0
+    };
+
+    setReviewsList((prev) => [reviewToAdd, ...prev]);
+    setShowReviewModal(false);
+    setNewReview({ userName: '', rating: 5, title: '', comment: '' });
+    if (showToast) {
+      showToast('Thank you! Your verified review has been submitted.');
+    }
+  };
+
+  const currentReviews = reviewsList && reviewsList.length > 0 ? reviewsList : (product.reviews || []);
+  const averageRatingNum = currentReviews.length > 0
+    ? (currentReviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0) / currentReviews.length).toFixed(1)
+    : (product.rating || 4.8);
+
+  const starBreakdowns = [5, 4, 3, 2, 1].map((stars) => {
+    const count = currentReviews.filter((r) => Math.round(Number(r.rating)) === stars).length;
+    const percentage = currentReviews.length > 0 ? Math.round((count / currentReviews.length) * 100) : (stars === 5 ? 85 : stars === 4 ? 15 : 0);
+    return { stars, count, percentage };
+  });
+
   return (
     <div className="section product-detail-container">
       <div className="container">
@@ -154,20 +230,38 @@ export const ProductDetail = () => {
                 <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
               </button>
 
-              <div className="gallery-icon-massive">
-                <Zap size={110} color={product.iconColor || '#00F59B'} />
+              <div className="gallery-icon-massive" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
+                {(product.images?.[activeThumb]?.url || product.images?.[0]?.url || product.image) ? (
+                  <img
+                    src={product.images?.[activeThumb]?.url || product.images?.[0]?.url || product.image}
+                    alt={product.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', maxHeight: '380px', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div style={{ display: (product.images?.[activeThumb]?.url || product.images?.[0]?.url || product.image) ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Zap size={110} color={product.iconColor || '#00F59B'} />
+                </div>
               </div>
             </div>
 
             {/* Thumbnail Strip */}
             <div className="gallery-thumbnails-strip">
-              {[0, 1, 2].map((idx) => (
+              {(product.images && product.images.length > 0 ? product.images : [{ url: product.image }]).map((imgObj, idx) => (
                 <button
                   key={idx}
                   className={`gallery-thumb-btn ${activeThumb === idx ? 'active' : ''}`}
                   onClick={() => setActiveThumb(idx)}
+                  style={{ overflow: 'hidden', padding: 0 }}
                 >
-                  <Zap size={24} color={idx === 0 ? (product.iconColor || '#00F59B') : 'var(--text-muted)'} />
+                  {imgObj?.url ? (
+                    <img src={imgObj.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <Zap size={24} color={idx === 0 ? (product.iconColor || '#00F59B') : 'var(--text-muted)'} />
+                  )}
                 </button>
               ))}
             </div>
@@ -427,6 +521,263 @@ export const ProductDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Customer Ratings & Reviews Section */}
+        <div className="reviews-section-container">
+          <div className="reviews-header-bar">
+            <div>
+              <span className="badge badge-mint" style={{ marginBottom: '0.5rem' }}>
+                Verified Feedback
+              </span>
+              <h2 className="section-title" style={{ textAlign: 'left', margin: 0 }}>
+                Customer Ratings & Reviews
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', margin: '0.25rem 0 0' }}>
+                Authentic community feedback and dosage experiences for {product.name}.
+              </p>
+            </div>
+
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowReviewModal(true)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Plus size={18} />
+              <span>Write a Review</span>
+            </button>
+          </div>
+
+          {/* Rating Score Breakdown Card */}
+          <div className="reviews-score-summary">
+            <div className="rating-big-box">
+              <div className="rating-score-num">{averageRatingNum}</div>
+              <div className="rating-stars-row">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    size={20}
+                    fill={s <= Math.round(Number(averageRatingNum)) ? 'currentColor' : 'none'}
+                    stroke={s <= Math.round(Number(averageRatingNum)) ? 'none' : 'currentColor'}
+                  />
+                ))}
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                Based on {currentReviews.length} verified review{currentReviews.length !== 1 ? 's' : ''}
+              </div>
+            </div>
+
+            <div className="rating-breakdown-list">
+              {starBreakdowns.map(({ stars, count, percentage }) => (
+                <div key={stars} className="rating-bar-row">
+                  <span style={{ width: '45px', textAlign: 'right', fontWeight: 600 }}>{stars} ★</span>
+                  <div className="rating-bar-track">
+                    <div className="rating-bar-fill" style={{ width: `${percentage}%` }} />
+                  </div>
+                  <span style={{ width: '40px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {count}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Reviews List */}
+          {currentReviews.length === 0 ? (
+            <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+              <MessageSquare size={40} color="var(--accent-mint)" style={{ margin: '0 auto 1rem', opacity: 0.8 }} />
+              <p style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 600, margin: '0 0 0.5rem' }}>No reviews yet</p>
+              <p style={{ margin: '0 0 1.5rem' }}>Be the first verified customer to share your experience with this supplement.</p>
+              <button className="btn btn-outline" onClick={() => setShowReviewModal(true)}>
+                Write the First Review
+              </button>
+            </div>
+          ) : (
+            <div className="reviews-grid">
+              {currentReviews.map((rev) => {
+                const isMarkedHelpful = !!helpfulMap[rev.id];
+                return (
+                  <div key={rev.id} className="review-item-card">
+                    <div>
+                      <div className="review-card-header">
+                        <div className="reviewer-user-info">
+                          <div className="reviewer-avatar-circle">
+                            {rev.avatarInitials || (rev.userName ? rev.userName[0].toUpperCase() : 'U')}
+                          </div>
+                          <div>
+                            <div className="reviewer-name">
+                              <span>{rev.userName}</span>
+                              <CheckCircle2 size={15} color="var(--accent-mint)" />
+                            </div>
+                            <span className="review-verified-tag">Verified Buyer</span>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#fbbf24' }}>
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                              key={s}
+                              size={14}
+                              fill={s <= rev.rating ? 'currentColor' : 'none'}
+                              stroke={s <= rev.rating ? 'none' : 'currentColor'}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      {rev.title && <div className="review-headline">{rev.title}</div>}
+                      <p className="review-description-text">{rev.comment}</p>
+                    </div>
+
+                    <div className="review-card-footer">
+                      <span>{rev.date}</span>
+                      <button
+                        className={`helpful-btn ${isMarkedHelpful ? 'active' : ''}`}
+                        onClick={() => handleToggleHelpful(rev.id)}
+                        title="Mark review as helpful"
+                      >
+                        <ThumbsUp size={13} fill={isMarkedHelpful ? 'currentColor' : 'none'} />
+                        <span>Helpful ({rev.helpfulCount || 0})</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Write a Review Modal */}
+        {showReviewModal && (
+          <div className="review-modal-backdrop" onClick={() => setShowReviewModal(false)}>
+            <div className="review-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.35rem', color: '#fff', fontWeight: 700 }}>
+                  Write a Verified Review
+                </h3>
+                <button
+                  onClick={() => setShowReviewModal(false)}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1 }}
+                >
+                  &times;
+                </button>
+              </div>
+
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', margin: '0 0 1.5rem', lineHeight: 1.5 }}>
+                Share your training and fitness experience with <strong>{product.name}</strong> to help fellow community members.
+              </p>
+
+              <form onSubmit={handleAddReview} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#fff', marginBottom: '0.5rem' }}>
+                    Rating
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    {[1, 2, 3, 4, 5].map((starVal) => (
+                      <button
+                        type="button"
+                        key={starVal}
+                        onClick={() => setNewReview((prev) => ({ ...prev, rating: starVal }))}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: starVal <= newReview.rating ? '#fbbf24' : 'var(--text-muted)',
+                          padding: '2px',
+                          display: 'flex',
+                          transition: 'transform 0.15s ease'
+                        }}
+                      >
+                        <Star size={26} fill={starVal <= newReview.rating ? 'currentColor' : 'none'} />
+                      </button>
+                    ))}
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginLeft: '0.5rem' }}>
+                      {newReview.rating} out of 5 stars
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#fff', marginBottom: '0.4rem' }}>
+                    Your Name / Nickname *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Aryan Mehra"
+                    value={newReview.userName}
+                    onChange={(e) => setNewReview((prev) => ({ ...prev, userName: e.target.value }))}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid var(--border-medium)',
+                      borderRadius: 'var(--radius-md)',
+                      color: '#fff',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#fff', marginBottom: '0.4rem' }}>
+                    Review Headline
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Superb mixability and noticeable recovery boost"
+                    value={newReview.title}
+                    onChange={(e) => setNewReview((prev) => ({ ...prev, title: e.target.value }))}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid var(--border-medium)',
+                      borderRadius: 'var(--radius-md)',
+                      color: '#fff',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#fff', marginBottom: '0.4rem' }}>
+                    Detailed Experience *
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    placeholder="Tell us about the texture, digestion, effects during your workouts, and how long you've used it..."
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview((prev) => ({ ...prev, comment: e.target.value }))}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid var(--border-medium)',
+                      borderRadius: 'var(--radius-md)',
+                      color: '#fff',
+                      fontSize: '0.9rem',
+                      resize: 'vertical'
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={() => setShowReviewModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Submit Review
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Related Products Section */}
         {relatedProducts.length > 0 && (

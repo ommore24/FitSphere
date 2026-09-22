@@ -11,24 +11,21 @@ const GUEST_CART_KEY = 'fitsphere_guest_cart';
 const GUEST_WISHLIST_KEY = 'fitsphere_guest_wishlist';
 
 export const CartProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
 
-  // Initialize guest cart from localStorage or pre-fill with starter sample if empty
-  const [cart, setCart] = useState(() => {
+  // Helper to load guest cart from localStorage or pre-fill with starter sample if empty
+  const getGuestCart = () => {
     try {
       const saved = localStorage.getItem(GUEST_CART_KEY);
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.warn('Failed to load guest cart:', e);
     }
-    // Default starter item for immediate preview
-    return [
-      { product: MOCK_PRODUCTS[0], quantity: 1 }
-    ];
-  });
+    return [{ product: MOCK_PRODUCTS[0], quantity: 1 }];
+  };
 
-  // Wishlist state: array of product IDs
-  const [wishlist, setWishlist] = useState(() => {
+  // Helper to load guest wishlist from localStorage
+  const getGuestWishlist = () => {
     try {
       const saved = localStorage.getItem(GUEST_WISHLIST_KEY);
       if (saved) return JSON.parse(saved);
@@ -36,7 +33,13 @@ export const CartProvider = ({ children }) => {
       console.warn('Failed to load guest wishlist:', e);
     }
     return [MOCK_PRODUCTS[1].id, MOCK_PRODUCTS[4].id];
-  });
+  };
+
+  // Initialize guest cart from localStorage or pre-fill with starter sample if empty
+  const [cart, setCart] = useState(getGuestCart);
+
+  // Wishlist state: array of product IDs
+  const [wishlist, setWishlist] = useState(getGuestWishlist);
 
   // Wishlist full products list
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -68,13 +71,17 @@ export const CartProvider = ({ children }) => {
     }, 3200);
   }, []);
 
-  // Sync with Supabase on user change
+  // Sync with Supabase on user change (login/logout)
   useEffect(() => {
     let isMounted = true;
 
     async function syncUserData() {
-      if (!user) {
-        // Logged out: retain local guest cart/wishlist
+      if (!currentUser?.id) {
+        // Logged out: reset user state to local guest cart/wishlist
+        setCart(getGuestCart());
+        const guestWish = getGuestWishlist();
+        setWishlist(guestWish);
+        setWishlistItems(MOCK_PRODUCTS.filter(p => guestWish.includes(p.id)));
         return;
       }
 
@@ -83,13 +90,13 @@ export const CartProvider = ({ children }) => {
 
       try {
         // Fetch cart from Supabase
-        const { data: remoteCart, error: cartErr } = await cartService.getCart(user.id);
-        if (isMounted && !cartErr && Array.isArray(remoteCart) && remoteCart.length > 0) {
+        const { data: remoteCart, error: cartErr } = await cartService.getCart(currentUser.id);
+        if (isMounted && !cartErr && Array.isArray(remoteCart)) {
           setCart(remoteCart);
         }
 
         // Fetch wishlist from Supabase
-        const { data: remoteWishlist, error: wishErr } = await wishlistService.getWishlist(user.id);
+        const { data: remoteWishlist, error: wishErr } = await wishlistService.getWishlist(currentUser.id);
         if (isMounted && !wishErr && Array.isArray(remoteWishlist)) {
           const ids = remoteWishlist.map(item => item.productId);
           setWishlist(ids);
@@ -110,28 +117,28 @@ export const CartProvider = ({ children }) => {
     return () => {
       isMounted = false;
     };
-  }, [user]);
+  }, [currentUser?.id]);
 
   // Persist guest state to localStorage when not authenticated
   useEffect(() => {
-    if (!user) {
+    if (!currentUser) {
       try {
         localStorage.setItem(GUEST_CART_KEY, JSON.stringify(cart));
       } catch (e) {
         console.warn('Failed to save guest cart:', e);
       }
     }
-  }, [cart, user]);
+  }, [cart, currentUser]);
 
   useEffect(() => {
-    if (!user) {
+    if (!currentUser) {
       try {
         localStorage.setItem(GUEST_WISHLIST_KEY, JSON.stringify(wishlist));
       } catch (e) {
         console.warn('Failed to save guest wishlist:', e);
       }
     }
-  }, [wishlist, user]);
+  }, [wishlist, currentUser]);
 
   // Cart operations
   const addToCart = async (product, qty = 1) => {
@@ -166,8 +173,8 @@ export const CartProvider = ({ children }) => {
     showToast(`Added "${product.name}" to cart (₹${(product.price * qty).toLocaleString('en-IN')})`);
 
     // Persist to Supabase if authenticated
-    if (user) {
-      cartService.addToCart(user.id, product.id, qty).catch(err => {
+    if (currentUser?.id) {
+      cartService.addToCart(currentUser.id, product.id, qty).catch(err => {
         console.warn('Failed to persist cart item to Supabase:', err);
       });
     }
@@ -179,8 +186,8 @@ export const CartProvider = ({ children }) => {
     setCart(prev => prev.filter(item => item.product.id !== productId));
     showToast('Item removed from cart', 'info');
 
-    if (user) {
-      cartService.removeFromCart(user.id, productId).catch(err => {
+    if (currentUser?.id) {
+      cartService.removeFromCart(currentUser.id, productId).catch(err => {
         console.warn('Failed to remove cart item from Supabase:', err);
       });
     }
@@ -209,8 +216,8 @@ export const CartProvider = ({ children }) => {
       )
     );
 
-    if (user) {
-      cartService.updateQuantity(user.id, productId, newQty).catch(err => {
+    if (currentUser?.id) {
+      cartService.updateQuantity(currentUser.id, productId, newQty).catch(err => {
         console.warn('Failed to update cart quantity in Supabase:', err);
       });
     }
@@ -220,8 +227,8 @@ export const CartProvider = ({ children }) => {
     setCart([]);
     showToast('Cart cleared', 'info');
 
-    if (user) {
-      cartService.clearCart(user.id).catch(err => {
+    if (currentUser?.id) {
+      cartService.clearCart(currentUser.id).catch(err => {
         console.warn('Failed to clear cart in Supabase:', err);
       });
     }
@@ -236,8 +243,8 @@ export const CartProvider = ({ children }) => {
       setWishlistItems(prev => prev.filter(p => p.id !== product.id));
       showToast(`Removed "${product.name}" from wishlist`, 'info');
 
-      if (user) {
-        wishlistService.removeFromWishlist(user.id, product.id).catch(err => {
+      if (currentUser?.id) {
+        wishlistService.removeFromWishlist(currentUser.id, product.id).catch(err => {
           console.warn('Failed to remove from Supabase wishlist:', err);
         });
       }
@@ -246,8 +253,8 @@ export const CartProvider = ({ children }) => {
       setWishlistItems(prev => [product, ...prev]);
       showToast(`Saved "${product.name}" to wishlist`);
 
-      if (user) {
-        wishlistService.addToWishlist(user.id, product.id).catch(err => {
+      if (currentUser?.id) {
+        wishlistService.addToWishlist(currentUser.id, product.id).catch(err => {
           console.warn('Failed to save to Supabase wishlist:', err);
         });
       } else {

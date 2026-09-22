@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Package,
@@ -7,16 +7,89 @@ import {
   BarChart3,
   Settings,
   ShieldCheck,
-  AlertCircle,
   CheckCircle2,
+  XCircle,
   Clock,
-  ExternalLink
+  ExternalLink,
+  Store
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { useCart } from '../../context/CartContext';
 import '../../styles/admin.css';
 
 export const AdminDashboard = () => {
   const [activeMenu, setActiveMenu] = useState('overview');
+  const { showToast } = useCart();
+
+  // Dynamic state lists
+  const [coachQueue, setCoachQueue] = useState([
+    { id: '1', full_name: 'Sarah Jenkins', certification_name: 'NSCA-CSCS', experience_years: 4, specialization: 'Olympic Weightlifting', status: 'PENDING' },
+    { id: '2', full_name: 'Dr. Brandon Cole, RD', certification_name: 'CSSD / RD', experience_years: 8, specialization: 'Metabolic Optimization', status: 'PENDING' },
+    { id: '3', full_name: 'Kavita Patel', certification_name: 'NASM-PES', experience_years: 5, specialization: 'Hyrox & Endurance', status: 'VERIFIED' }
+  ]);
+
+  const [sellerQueue, setSellerQueue] = useState([
+    { id: 's1', business_name: 'Apex Nutrition India', contact_email: 'apex@nutrition.in', verification_status: 'PENDING' },
+    { id: 's2', business_name: 'FitBio Labs', contact_email: 'contact@fitbio.com', verification_status: 'VERIFIED' }
+  ]);
+
+  const [productQueue, setProductQueue] = useState([
+    { id: 'p1', product_name: 'FitSphere Clean Whey Isolate (Vanilla)', brand: 'FitSphere Native', price_inr: 3499, publication_status: 'PENDING' },
+    { id: 'p2', product_name: 'Plant Protein Organic Mix', brand: 'Raw Greens', price_inr: 2199, publication_status: 'LIVE' }
+  ]);
+
+  useEffect(() => {
+    async function loadAdminData() {
+      if (!isSupabaseConfigured) return;
+      try {
+        const { data: coaches } = await supabase.from('coach_applications').select('*');
+        if (coaches && coaches.length > 0) setCoachQueue(coaches);
+
+        const { data: sellers } = await supabase.from('sellers').select('*');
+        if (sellers && sellers.length > 0) setSellerQueue(sellers);
+      } catch (err) {
+        console.warn('Admin load fallback:', err);
+      }
+    }
+    loadAdminData();
+  }, []);
+
+  const handleUpdateCoachStatus = async (coachId, newStatus) => {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('coach_applications').update({ status: newStatus }).eq('id', coachId);
+      } catch (e) {
+        console.warn('Coach status update fallback:', e);
+      }
+    }
+    setCoachQueue(prev => prev.map(c => c.id === coachId ? { ...c, status: newStatus } : c));
+    showToast(`Coach status updated to ${newStatus}`, 'info');
+  };
+
+  const handleUpdateSellerStatus = async (sellerId, newStatus) => {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('sellers').update({ verification_status: newStatus }).eq('id', sellerId);
+      } catch (e) {
+        console.warn('Seller status update fallback:', e);
+      }
+    }
+    setSellerQueue(prev => prev.map(s => s.id === sellerId ? { ...s, verification_status: newStatus } : s));
+    showToast(`Seller status updated to ${newStatus}`, 'info');
+  };
+
+  const handleUpdateProductStatus = async (prodId, newStatus) => {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('products').update({ publication_status: newStatus }).eq('id', prodId);
+      } catch (e) {
+        console.warn('Product status update fallback:', e);
+      }
+    }
+    setProductQueue(prev => prev.map(p => p.id === prodId ? { ...p, publication_status: newStatus } : p));
+    showToast(`Product publication status set to ${newStatus}`, 'info');
+  };
 
   return (
     <div className="admin-wrapper">
@@ -26,7 +99,7 @@ export const AdminDashboard = () => {
           <ShieldCheck size={24} color="var(--accent-cyan)" />
           <div>
             <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>FitSphere Admin</div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>PART 1 PLACEHOLDER</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--accent-mint)', fontWeight: 600 }}>OPERATIONS CONSOLE</div>
           </div>
         </div>
 
@@ -39,18 +112,11 @@ export const AdminDashboard = () => {
             <span>Platform Overview</span>
           </li>
           <li
-            className={`admin-nav-item ${activeMenu === 'products' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('products')}
+            className={`admin-nav-item ${activeMenu === 'sellers' ? 'active' : ''}`}
+            onClick={() => setActiveMenu('sellers')}
           >
-            <Package size={18} />
-            <span>Product Catalog</span>
-          </li>
-          <li
-            className={`admin-nav-item ${activeMenu === 'orders' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('orders')}
-          >
-            <ShoppingCart size={18} />
-            <span>Orders & Logistics</span>
+            <Store size={18} />
+            <span>Seller Approvals</span>
           </li>
           <li
             className={`admin-nav-item ${activeMenu === 'coaches' ? 'active' : ''}`}
@@ -60,18 +126,11 @@ export const AdminDashboard = () => {
             <span>Coach Verification Queue</span>
           </li>
           <li
-            className={`admin-nav-item ${activeMenu === 'analytics' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('analytics')}
+            className={`admin-nav-item ${activeMenu === 'products' ? 'active' : ''}`}
+            onClick={() => setActiveMenu('products')}
           >
-            <BarChart3 size={18} />
-            <span>Analytics & GMV</span>
-          </li>
-          <li
-            className={`admin-nav-item ${activeMenu === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveMenu('settings')}
-          >
-            <Settings size={18} />
-            <span>System Settings</span>
+            <Package size={18} />
+            <span>Product Moderation</span>
           </li>
         </ul>
 
@@ -85,27 +144,16 @@ export const AdminDashboard = () => {
 
       {/* Admin Content Area */}
       <main className="admin-content">
-        {/* Placeholder Status Banner */}
-        <div style={{ background: 'rgba(0, 229, 255, 0.08)', border: '1px solid rgba(0, 229, 255, 0.25)', borderRadius: 'var(--radius-md)', padding: '1rem 1.5rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-          <AlertCircle size={22} color="var(--accent-cyan)" />
-          <div>
-            <strong style={{ color: 'var(--accent-cyan)' }}>Admin Module Scaffold (Part 1 Architecture)</strong>
-            <p style={{ fontSize: '0.85rem', margin: 0, color: 'var(--text-secondary)' }}>
-              This route and navigation layout are wired into FitSphere's modular routing foundation. Real-time DB mutations, inventory stock sync, and credential approvals will be hooked up in subsequent backend stages.
-            </p>
-          </div>
-        </div>
-
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
           <div>
             <h1 style={{ fontSize: '1.9rem', fontWeight: 800, marginBottom: '0.3rem' }}>
-              Executive Platform Metrics
+              FitSphere Administration Console
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
-              Real-time platform overview across Marketplace sales and Fitness Journey athlete engagement.
+              Audit coach credentials, verify sellers, approve products, and monitor sales.
             </p>
           </div>
-          <span className="badge badge-mint">System Status: Nominal</span>
+          <span className="badge badge-mint">Admin Access Granted</span>
         </div>
 
         {/* KPI Grid */}
@@ -120,88 +168,185 @@ export const AdminDashboard = () => {
 
           <div className="admin-kpi-card">
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
-              Active Athletes
+              Active Sellers
             </span>
-            <h3>52,190</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--accent-cyan)' }}>+1,420 new registrations</span>
+            <h3>{sellerQueue.filter(s => s.verification_status === 'VERIFIED').length + 1}</h3>
+            <span style={{ fontSize: '0.78rem', color: 'var(--accent-cyan)' }}>Verified Partners</span>
           </div>
 
           <div className="admin-kpi-card">
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
               Pending Coach Reviews
             </span>
-            <h3 style={{ color: 'var(--accent-secondary)' }}>14 Applications</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--accent-secondary)' }}>Action required</span>
+            <h3 style={{ color: 'var(--accent-secondary)' }}>
+              {coachQueue.filter(c => c.status === 'PENDING').length} Applications
+            </h3>
+            <span style={{ fontSize: '0.78rem', color: 'var(--accent-secondary)' }}>Requires Audit</span>
           </div>
 
           <div className="admin-kpi-card">
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
-              Journey Engagement Rate
+              Product Moderation Queue
             </span>
-            <h3 style={{ color: 'var(--accent-amber)' }}>76.8%</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Daily macro adherence</span>
+            <h3 style={{ color: 'var(--accent-amber)' }}>
+              {productQueue.filter(p => p.publication_status === 'PENDING').length} Pending
+            </h3>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Awaiting Live Status</span>
           </div>
         </div>
 
-        {/* Pending Coach Verifications Table */}
-        <div className="admin-table-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '1.25rem' }}>Coach Verification Queue (Recent Submissions)</h3>
-            <span className="badge badge-coral">14 Pending</span>
-          </div>
+        {/* TAB: COACHES */}
+        {(activeMenu === 'overview' || activeMenu === 'coaches') && (
+          <div className="admin-table-card" style={{ marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '1.25rem' }}>Coach Verification Queue</h3>
+              <span className="badge badge-coral">{coachQueue.filter(c => c.status === 'PENDING').length} Pending</span>
+            </div>
 
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Applicant Name</th>
-                <th>Credential</th>
-                <th>Experience</th>
-                <th>Specialization</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#fff' }}>Sarah Jenkins</td>
-                <td>NSCA - CSCS</td>
-                <td>4 Years</td>
-                <td>Olympic Weightlifting</td>
-                <td><span className="badge badge-coral">Under Review</span></td>
-                <td>
-                  <button className="btn btn-sm btn-outline-mint" onClick={() => alert('Applicant review modal will be wired in Part 2.')}>
-                    Audit Credentials
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#fff' }}>Dr. Brandon Cole, RD</td>
-                <td>CSSD / RD</td>
-                <td>8 Years</td>
-                <td>Metabolic Optimization</td>
-                <td><span className="badge badge-coral">Under Review</span></td>
-                <td>
-                  <button className="btn btn-sm btn-outline-mint" onClick={() => alert('Applicant review modal will be wired in Part 2.')}>
-                    Audit Credentials
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 700, color: '#fff' }}>Kavita Patel</td>
-                <td>NASM-PES</td>
-                <td>5 Years</td>
-                <td>Hyrox & Tri-Endurance</td>
-                <td><span className="badge badge-mint">Approved</span></td>
-                <td>
-                  <button className="btn btn-sm btn-secondary" disabled>
-                    Verified
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Applicant Name</th>
+                  <th>Certification</th>
+                  <th>Experience</th>
+                  <th>Specialization</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {coachQueue.map((coach) => (
+                  <tr key={coach.id}>
+                    <td style={{ fontWeight: 700, color: '#fff' }}>{coach.full_name}</td>
+                    <td>{coach.certification_name}</td>
+                    <td>{coach.experience_years} Years</td>
+                    <td>{coach.specialization}</td>
+                    <td>
+                      <span className={`badge ${coach.status === 'VERIFIED' ? 'badge-mint' : coach.status === 'REJECTED' ? 'badge-neutral' : 'badge-coral'}`}>
+                        {coach.status}
+                      </span>
+                    </td>
+                    <td>
+                      {coach.status !== 'VERIFIED' ? (
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                          <button className="btn btn-sm btn-outline-mint" onClick={() => handleUpdateCoachStatus(coach.id, 'VERIFIED')}>
+                            Verify
+                          </button>
+                          <button className="btn btn-sm btn-outline-coral" onClick={() => handleUpdateCoachStatus(coach.id, 'REJECTED')}>
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <button className="btn btn-sm btn-outline-coral" onClick={() => handleUpdateCoachStatus(coach.id, 'SUSPENDED')}>
+                          Suspend
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* TAB: SELLERS */}
+        {(activeMenu === 'overview' || activeMenu === 'sellers') && (
+          <div className="admin-table-card" style={{ marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '1.25rem' }}>Seller Verification Portal</h3>
+              <span className="badge badge-cyan">{sellerQueue.length} Registrations</span>
+            </div>
+
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Business / Brand</th>
+                  <th>Contact Email</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sellerQueue.map((seller) => (
+                  <tr key={seller.id}>
+                    <td style={{ fontWeight: 700, color: '#fff' }}>{seller.business_name}</td>
+                    <td>{seller.contact_email}</td>
+                    <td>
+                      <span className={`badge ${seller.verification_status === 'VERIFIED' ? 'badge-mint' : 'badge-coral'}`}>
+                        {seller.verification_status}
+                      </span>
+                    </td>
+                    <td>
+                      {seller.verification_status !== 'VERIFIED' ? (
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                          <button className="btn btn-sm btn-outline-mint" onClick={() => handleUpdateSellerStatus(seller.id, 'VERIFIED')}>
+                            Approve Seller
+                          </button>
+                          <button className="btn btn-sm btn-outline-coral" onClick={() => handleUpdateSellerStatus(seller.id, 'REJECTED')}>
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize: '0.8rem', color: 'var(--accent-mint)', fontWeight: 700 }}>Verified Partner</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* TAB: PRODUCTS MODERATION */}
+        {(activeMenu === 'overview' || activeMenu === 'products') && (
+          <div className="admin-table-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '1.25rem' }}>Product Publication Approvals</h3>
+              <span className="badge badge-amber">{productQueue.length} Products</span>
+            </div>
+
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Brand</th>
+                  <th>Price</th>
+                  <th>Publication Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productQueue.map((prod) => (
+                  <tr key={prod.id}>
+                    <td style={{ fontWeight: 700, color: '#fff' }}>{prod.product_name}</td>
+                    <td>{prod.brand}</td>
+                    <td>₹{Number(prod.price_inr).toLocaleString('en-IN')}</td>
+                    <td>
+                      <span className={`badge ${prod.publication_status === 'LIVE' ? 'badge-mint' : 'badge-coral'}`}>
+                        {prod.publication_status}
+                      </span>
+                    </td>
+                    <td>
+                      {prod.publication_status !== 'LIVE' ? (
+                        <button className="btn btn-sm btn-outline-mint" onClick={() => handleUpdateProductStatus(prod.id, 'LIVE')}>
+                          Publish Live
+                        </button>
+                      ) : (
+                        <button className="btn btn-sm btn-outline-coral" onClick={() => handleUpdateProductStatus(prod.id, 'REJECTED')}>
+                          Unpublish
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </main>
     </div>
   );
 };
+
+export default AdminDashboard;
+
