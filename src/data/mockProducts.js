@@ -86,8 +86,40 @@ export const MOCK_PRODUCTS = [
     goals: ['Muscle Building', 'Recovery'],
     dietaryTags: ['Vegetarian', 'High Protein', 'Gluten Free'],
     images: [
-      { url: '/images/products/biozyme_whey_1.jpg', alt: 'Biozyme Whey Isolate Front', isPrimary: true },
-      { url: '/images/products/biozyme_whey_2.jpg', alt: 'Biozyme Whey Nutrition Panel', isPrimary: false }
+      { url: '/images/products/mb_biozyme.jpg', alt: 'Biozyme Whey Isolate Front', isPrimary: true }
+    ],
+    image: '/images/products/mb_biozyme.jpg',
+    reviews: [
+          {
+                "id": "rev-101",
+                "userName": "Vikram Sharma",
+                "avatarInitials": "VS",
+                "rating": 5,
+                "date": "Verified Buyer • 4 days ago",
+                "title": "Zero bloating, exceptional mixability!",
+                "comment": "I have tried multiple isolates over 6 years of training, but MB Biozyme really delivers on the absorption claim. The digestive enzymes make a huge difference, leaving no heavy feeling post-workout.",
+                "helpfulCount": 34
+          },
+          {
+                "id": "rev-102",
+                "userName": "Neha Kapoor",
+                "avatarInitials": "NK",
+                "rating": 5,
+                "date": "Verified Buyer • 1 week ago",
+                "title": "Authenticity verified, tastes incredible",
+                "comment": "Verified the scratch code on the MuscleBlaze portal instantly. Belgian Chocolate with cold almond milk tastes like a cafe shake. 27g pure protein per scoop keeps me hitting my macros.",
+                "helpfulCount": 28
+          },
+          {
+                "id": "rev-103",
+                "userName": "Rahul Verma",
+                "avatarInitials": "RV",
+                "rating": 4,
+                "date": "Verified Buyer • 2 weeks ago",
+                "title": "Noticeable recovery speed and lean gains",
+                "comment": "Great results in muscle recovery and fullness. Slightly premium price, but the quality and scoop-on-top packaging make it worth every rupee.",
+                "helpfulCount": 15
+          }
     ]
   },
   {
@@ -126,7 +158,40 @@ export const MOCK_PRODUCTS = [
     goals: ['Muscle Building', 'General Fitness', 'Recovery'],
     dietaryTags: ['Vegetarian', 'High Protein', 'Gluten Free'],
     images: [
-      { url: '/images/products/on_gold_1.jpg', alt: 'Gold Standard Whey Canister', isPrimary: true }
+      { url: '/images/products/on_gold.jpeg', alt: 'Gold Standard Whey Canister', isPrimary: true }
+    ],
+    image: '/images/products/on_gold.jpeg',
+    reviews: [
+          {
+                "id": "rev-201",
+                "userName": "Siddharth Rao",
+                "avatarInitials": "SR",
+                "rating": 5,
+                "date": "Verified Buyer • 3 days ago",
+                "title": "The Gold Standard for a reason",
+                "comment": "Double Rich Chocolate mixes effortlessly in a standard shaker with zero clumps. Consistent recovery and steady strength progress across heavy push-pull cycles.",
+                "helpfulCount": 42
+          },
+          {
+                "id": "rev-202",
+                "userName": "Ananya Deshmukh",
+                "avatarInitials": "AD",
+                "rating": 5,
+                "date": "Verified Buyer • 1 week ago",
+                "title": "Authentic imported batch with hologram",
+                "comment": "Genuine Optimum Nutrition tub with verification seal. Best all-round daily whey for oatmeal bowls and post-workout smoothies.",
+                "helpfulCount": 22
+          },
+          {
+                "id": "rev-203",
+                "userName": "Karan Singhania",
+                "avatarInitials": "KS",
+                "rating": 4,
+                "date": "Verified Buyer • 3 weeks ago",
+                "title": "Smooth flavor profile that is not overly sweet",
+                "comment": "Naturally occurring 5.5g BCAAs help immensely with DOMS after heavy squat sessions. Reliable everyday staple.",
+                "helpfulCount": 19
+          }
     ]
   },
   {
@@ -165,7 +230,30 @@ export const MOCK_PRODUCTS = [
     goals: ['General Fitness', 'Endurance'],
     dietaryTags: ['Vegetarian', 'Sugar Free', 'Gluten Free'],
     images: [
-      { url: '/images/products/vitalize_1.jpg', alt: 'Fast&Up Vitalize Tube', isPrimary: true }
+      { url: '/images/products/vitalize.jpg', alt: 'Fast&Up Vitalize Tube', isPrimary: true }
+    ],
+    image: '/images/products/vitalize.jpg',
+    reviews: [
+          {
+                "id": "rev-301",
+                "userName": "Aditya Joshi",
+                "avatarInitials": "AJ",
+                "rating": 5,
+                "date": "Verified Buyer • 5 days ago",
+                "title": "Refreshing morning energy drink!",
+                "comment": "Replaced traditional chalky pills with this effervescent tablet. Orange burst flavor is delicious, and I noticed much better afternoon focus and energy.",
+                "helpfulCount": 18
+          },
+          {
+                "id": "rev-302",
+                "userName": "Pooja Sundaram",
+                "avatarInitials": "PS",
+                "rating": 5,
+                "date": "Verified Buyer • 2 weeks ago",
+                "title": "Gentle on stomach and clean beetroot boost",
+                "comment": "100% vegetarian with natural beetroot extract. Gives a clean stamina surge during my 10k morning run workouts.",
+                "helpfulCount": 14
+          }
     ]
   },
   {
@@ -204,7 +292,30 @@ export const MOCK_PRODUCTS = [
     goals: ['General Fitness', 'Recovery'],
     dietaryTags: ['Vegetarian', 'Gluten Free', 'Sugar Free'],
     images: [
-      { url: '/images/products/thorne_basic_1.jpg', alt: 'Thorne Basic Nutrients Bottle', isPrimary: true }
+      { url: '/images/products/thorne_basic.jpg', alt: 'Thorne Basic Nutrients Bottle', isPrimary: true }
+    ],
+    image: '/images/products/thorne_basic.jpg',
+    reviews: [
+          {
+                "id": "rev-401",
+                "userName": "Dr. Rajiv Menon",
+                "avatarInitials": "RM",
+                "rating": 5,
+                "date": "Verified Buyer • 1 week ago",
+                "title": "Highest clinical purity multivitamin",
+                "comment": "Chelated minerals and active methylated 5-MTHF folate offer superior cellular bioavailability over generic drugstore vitamins. Recommended to all serious athletes.",
+                "helpfulCount": 51
+          },
+          {
+                "id": "rev-402",
+                "userName": "Meera Iyer",
+                "avatarInitials": "MI",
+                "rating": 5,
+                "date": "Verified Buyer • 2 weeks ago",
+                "title": "Noticeable difference in hair, nails & vitality",
+                "comment": "Within two weeks of taking 2 capsules daily with breakfast, daytime fatigue vanished. Thorne standards are leagues ahead.",
+                "helpfulCount": 27
+          }
     ]
   },
   {
@@ -243,7 +354,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Muscle Building', 'Endurance'],
     dietaryTags: ['Vegetarian', 'Gluten Free', 'Sugar Free', 'Keto'],
     images: [
-      { url: '/images/products/mb_creatine_1.jpg', alt: 'MuscleBlaze CreAMP Tub', isPrimary: true }
+      { url: '/images/products/mb_creatine.png', alt: 'MuscleBlaze CreAMP Tub', isPrimary: true }
+    ],
+    image: '/images/products/mb_creatine.png',
+    reviews: [
+          {
+                "id": "rev-501",
+                "userName": "Harsh Vardhan",
+                "avatarInitials": "HV",
+                "rating": 5,
+                "date": "Verified Buyer • 4 days ago",
+                "title": "Broke my bench press plateau in 3 weeks!",
+                "comment": "CreAMP dissolves noticeably faster than standard creatine without leaving sand at the bottom of the glass. Added 5kg to my working sets.",
+                "helpfulCount": 39
+          },
+          {
+                "id": "rev-502",
+                "userName": "Tanmay Bhatt",
+                "avatarInitials": "TB",
+                "rating": 5,
+                "date": "Verified Buyer • 1 week ago",
+                "title": "Zero stomach distress, rapid saturation",
+                "comment": "Pure micronized powder. Intracellular water retention gave my delts and chest a much fuller appearance. 83 servings lasts nearly 3 months.",
+                "helpfulCount": 25
+          }
     ]
   },
   {
@@ -282,7 +416,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Endurance', 'Muscle Building'],
     dietaryTags: ['Vegetarian', 'Sugar Free', 'Gluten Free'],
     images: [
-      { url: '/images/products/c4_original_1.jpg', alt: 'Cellucor C4 Tub', isPrimary: true }
+      { url: '/images/products/c4_original.png', alt: 'Cellucor C4 Tub', isPrimary: true }
+    ],
+    image: '/images/products/c4_original.png',
+    reviews: [
+          {
+                "id": "rev-601",
+                "userName": "Aryan Malhotra",
+                "avatarInitials": "AM",
+                "rating": 5,
+                "date": "Verified Buyer • 2 days ago",
+                "title": "Laser focus and explosive endurance",
+                "comment": "Beta-alanine tingles start within 15 minutes. Great vascularity and zero jittery crash after tough 90-minute workouts.",
+                "helpfulCount": 33
+          },
+          {
+                "id": "rev-602",
+                "userName": "Sneha Reddy",
+                "avatarInitials": "SR",
+                "rating": 4,
+                "date": "Verified Buyer • 1 week ago",
+                "title": "Fruit Punch is sweet and crisp",
+                "comment": "Gives me that vital spark after a tiring workday to smash PRs in the gym. One rounded scoop is the sweet spot.",
+                "helpfulCount": 16
+          }
     ]
   },
   {
@@ -321,7 +478,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Muscle Building', 'Weight Loss', 'General Fitness'],
     dietaryTags: ['Vegetarian', 'High Protein', 'Gluten Free', 'Sugar Free'],
     images: [
-      { url: '/images/products/whole_truth_bar_1.jpg', alt: 'The Whole Truth Bar Pack', isPrimary: true }
+      { url: '/images/products/whole_truth_bar.jpg', alt: 'The Whole Truth Bar Pack', isPrimary: true }
+    ],
+    image: '/images/products/whole_truth_bar.jpg',
+    reviews: [
+          {
+                "id": "rev-701",
+                "userName": "Ritu Sen",
+                "avatarInitials": "RS",
+                "rating": 5,
+                "date": "Verified Buyer • 3 days ago",
+                "title": "Zero artificial sweeteners or chemical aftertaste",
+                "comment": "Just dates, almonds, cocoa, and pure whey isolate. Texture is soft, chewy, and naturally satisfying. My daily 4 PM snack at work.",
+                "helpfulCount": 31
+          },
+          {
+                "id": "rev-702",
+                "userName": "Abhishek Kulkarni",
+                "avatarInitials": "AK",
+                "rating": 5,
+                "date": "Verified Buyer • 2 weeks ago",
+                "title": "Cleanest protein bar in India",
+                "comment": "15g protein per bar with zero bloating. Whole Truth transparency in ingredients is genuinely unmatched.",
+                "helpfulCount": 23
+          }
     ]
   },
   {
@@ -360,7 +540,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Weight Loss', 'General Fitness', 'Muscle Building'],
     dietaryTags: ['Vegetarian', 'High Protein', 'Gluten Free'],
     images: [
-      { url: '/images/products/yogabar_pb_1.jpg', alt: 'Yoga Bar Peanut Butter Jar', isPrimary: true }
+      { url: '/images/products/yogabar_pb.jpg', alt: 'Yoga Bar Peanut Butter Jar', isPrimary: true }
+    ],
+    image: '/images/products/yogabar_pb.jpg',
+    reviews: [
+          {
+                "id": "rev-801",
+                "userName": "Kabir Sen",
+                "avatarInitials": "KS",
+                "rating": 5,
+                "date": "Verified Buyer • 2 days ago",
+                "title": "Unbelievable rich dark cocoa flavor",
+                "comment": "Zero palm oil and zero hydrogenated oils. Real peanut crunch with Belgian dark cocoa. Tastes decadent yet fits my clean bulking macros perfectly.",
+                "helpfulCount": 46
+          },
+          {
+                "id": "rev-802",
+                "userName": "Shreya Mukherjee",
+                "avatarInitials": "SM",
+                "rating": 5,
+                "date": "Verified Buyer • 1 week ago",
+                "title": "Best peanut butter on the market",
+                "comment": "Spreads smoothly on toasted multigrain bread with sliced bananas. The natural coconut sugar sweetness is subtle and perfect.",
+                "helpfulCount": 29
+          }
     ]
   },
   {
@@ -392,7 +595,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Muscle Building', 'Endurance'],
     dietaryTags: [],
     images: [
-      { url: '/images/products/kobo_belt_1.jpg', alt: 'Kobo Lifting Belt', isPrimary: true }
+      { url: '/images/products/kobo_belt.jpg', alt: 'Kobo Lifting Belt', isPrimary: true }
+    ],
+    image: '/images/products/kobo_belt.jpg',
+    reviews: [
+          {
+                "id": "rev-901",
+                "userName": "Manpreet Singh",
+                "avatarInitials": "MS",
+                "rating": 5,
+                "date": "Verified Buyer • 5 days ago",
+                "title": "Rock solid lumbar support for heavy squats",
+                "comment": "Hit a 180kg squat PR with total confidence. The steel roller buckle locks securely and does not pop off under maximum abdominal pressure.",
+                "helpfulCount": 24
+          },
+          {
+                "id": "rev-902",
+                "userName": "Sameer Khan",
+                "avatarInitials": "SK",
+                "rating": 4,
+                "date": "Verified Buyer • 2 weeks ago",
+                "title": "Comfortable contouring without bruising ribs",
+                "comment": "Much more ergonomic than stiff leather belts. Neoprene core provides firm bracing with zero pinching.",
+                "helpfulCount": 17
+          }
     ]
   },
   {
@@ -424,7 +650,30 @@ export const MOCK_PRODUCTS = [
     goals: ['General Fitness', 'Recovery'],
     dietaryTags: [],
     images: [
-      { url: '/images/products/boldfit_mat_1.jpg', alt: 'Boldfit Pro Yoga Mat', isPrimary: true }
+      { url: '/images/products/boldfit_mat.jpg', alt: 'Boldfit Pro Yoga Mat', isPrimary: true }
+    ],
+    image: '/images/products/boldfit_mat.jpg',
+    reviews: [
+          {
+                "id": "rev-1001",
+                "userName": "Shalini Mishra",
+                "avatarInitials": "SM",
+                "rating": 5,
+                "date": "Verified Buyer • 3 days ago",
+                "title": "Zero slip during sweaty vinyasa flows",
+                "comment": "6mm density cushions knees and elbows perfectly on marble floors. Beautiful emerald dual-tone color and completely free of toxic chemical smell.",
+                "helpfulCount": 38
+          },
+          {
+                "id": "rev-1002",
+                "userName": "Nikhil Jain",
+                "avatarInitials": "NJ",
+                "rating": 4,
+                "date": "Verified Buyer • 1 week ago",
+                "title": "Durable grip and easy to carry",
+                "comment": "Comes with a neat carrying strap and breathable bag. Grips firmly to the floor without curling at the edges.",
+                "helpfulCount": 15
+          }
     ]
   },
   {
@@ -456,7 +705,30 @@ export const MOCK_PRODUCTS = [
     goals: ['General Fitness', 'Endurance', 'Recovery'],
     dietaryTags: ['Vegetarian', 'Organic', 'Gluten Free'],
     images: [
-      { url: '/images/products/kapiva_shilajit_1.jpg', alt: 'Kapiva Shilajit Jar', isPrimary: true }
+      { url: '/images/products/kapiva_shilajit.jpg', alt: 'Kapiva Shilajit Jar', isPrimary: true }
+    ],
+    image: '/images/products/kapiva_shilajit.jpg',
+    reviews: [
+          {
+                "id": "rev-1101",
+                "userName": "Harish Chandra",
+                "avatarInitials": "HC",
+                "rating": 5,
+                "date": "Verified Buyer • 4 days ago",
+                "title": "Authentic Himalayan resin with 24K gold",
+                "comment": "Dissolves cleanly in warm milk leaving zero residue. The lab-tested certificate of analysis gives total peace of mind regarding heavy metals.",
+                "helpfulCount": 44
+          },
+          {
+                "id": "rev-1102",
+                "userName": "Rajesh Pillai",
+                "avatarInitials": "RP",
+                "rating": 5,
+                "date": "Verified Buyer • 2 weeks ago",
+                "title": "Noticeable stamina boost in gym and daily work",
+                "comment": "A pea-sized scoop each morning has significantly boosted my endurance and recovery from high volume leg sessions.",
+                "helpfulCount": 27
+          }
     ]
   },
   {
@@ -488,7 +760,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Recovery', 'General Fitness'],
     dietaryTags: ['Vegetarian', 'Organic', 'Gluten Free', 'Sugar Free'],
     images: [
-      { url: '/images/products/ashwagandha_1.jpg', alt: 'Organic India Ashwagandha Bottle', isPrimary: true }
+      { url: '/images/products/organic_india_ashwa.jpg', alt: 'Organic India Ashwagandha Bottle', isPrimary: true }
+    ],
+    image: '/images/products/organic_india_ashwa.jpg',
+    reviews: [
+          {
+                "id": "rev-1201",
+                "userName": "Sunita Roy",
+                "avatarInitials": "SR",
+                "rating": 5,
+                "date": "Verified Buyer • 6 days ago",
+                "title": "Significantly lowers evening stress & cortisol",
+                "comment": "Sleep quality has deepened tremendously. I wake up rested and ready to train without any morning grogginess. Organic India quality is consistent.",
+                "helpfulCount": 32
+          },
+          {
+                "id": "rev-1202",
+                "userName": "Dr. Alok Mathur",
+                "avatarInitials": "AM",
+                "rating": 5,
+                "date": "Verified Buyer • 3 weeks ago",
+                "title": "Pure root extract in vegetarian capsules",
+                "comment": "Standardized potency without artificial flow agents. Highly recommended for active individuals managing work and training fatigue.",
+                "helpfulCount": 21
+          }
     ]
   },
   {
@@ -520,7 +815,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Recovery', 'General Fitness'],
     dietaryTags: [],
     images: [
-      { url: '/images/products/hypervolt_go2_1.jpg', alt: 'Hypervolt GO 2 Device', isPrimary: true }
+      { url: '/images/products/hypervolt_go2.jpg', alt: 'Hypervolt GO 2 Device', isPrimary: true }
+    ],
+    image: '/images/products/hypervolt_go2.jpg',
+    reviews: [
+          {
+                "id": "rev-1301",
+                "userName": "Pradeep Kumar",
+                "avatarInitials": "PK",
+                "rating": 5,
+                "date": "Verified Buyer • 5 days ago",
+                "title": "Whisper quiet with deep percussive punch",
+                "comment": "Compact enough for my travel bag, but has enough stall force to release stubborn knots in my traps and hamstrings within minutes.",
+                "helpfulCount": 29
+          },
+          {
+                "id": "rev-1302",
+                "userName": "Monica D'Souza",
+                "avatarInitials": "MD",
+                "rating": 5,
+                "date": "Verified Buyer • 2 weeks ago",
+                "title": "Battery lasts weeks, ergonomic angle",
+                "comment": "Reaches the mid-back effortlessly. Outstanding build quality and aesthetic arctic white design.",
+                "helpfulCount": 18
+          }
     ]
   },
   {
@@ -552,7 +870,30 @@ export const MOCK_PRODUCTS = [
     goals: ['Recovery', 'General Fitness'],
     dietaryTags: [],
     images: [
-      { url: '/images/products/drtrust_roller_1.jpg', alt: 'Dr Trust Foam Roller', isPrimary: true }
+      { url: '/images/products/drtrust_roller.jpg', alt: 'Dr Trust Foam Roller', isPrimary: true }
+    ],
+    image: '/images/products/drtrust_roller.jpg',
+    reviews: [
+      {
+        id: "rev-1401",
+        userName: "Gaurav Malhotra",
+        avatarInitials: "GM",
+        rating: 5,
+        date: "Verified Buyer • 5 days ago",
+        title: "Rigid and durable, doesn't deform under body weight",
+        comment: "Excellent high-density EPP foam. Doesn't bend or lose firmness even when rolling out tight IT bands and upper back knots. Fantastic relief after deadlift days.",
+        helpfulCount: 24
+      },
+      {
+        id: "rev-1402",
+        userName: "Pooja Hegde",
+        avatarInitials: "PH",
+        rating: 4,
+        date: "Verified Buyer • 2 weeks ago",
+        title: "Great grid texture for deep tissue trigger points",
+        comment: "The grid texture digs deep into the thoracic spine and glutes. Lightweight enough to carry along to the gym or crossfit sessions.",
+        helpfulCount: 16
+      }
     ]
   }
 ];

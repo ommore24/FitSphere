@@ -21,8 +21,8 @@ export const QuickViewModal = ({ product, isOpen, onClose }) => {
           <div className="quick-view-visual" style={{ background: product.imageBg }}>
             <div
               style={{
-                width: '120px',
-                height: '120px',
+                width: '140px',
+                height: '140px',
                 borderRadius: '24px',
                 background: 'rgba(255, 255, 255, 0.08)',
                 border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -30,10 +30,20 @@ export const QuickViewModal = ({ product, isOpen, onClose }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '1.5rem',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                overflow: 'hidden'
               }}
             >
-              <Zap size={56} color={product.iconColor} />
+              {(product.images?.[0]?.url || product.image) ? (
+                <img
+                  src={product.images?.[0]?.url || product.image}
+                  alt={product.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              ) : (
+                <Zap size={56} color={product.iconColor} />
+              )}
             </div>
 
             <span className={`badge badge-${product.tagColor}`} style={{ marginBottom: '0.5rem' }}>

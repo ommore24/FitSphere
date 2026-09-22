@@ -90,10 +90,20 @@ export const Cart = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        flexShrink: 0
+                        flexShrink: 0,
+                        overflow: 'hidden'
                       }}
                     >
-                      <Zap size={32} color={product.iconColor || '#00F59B'} />
+                      {(product.images?.[0]?.url || product.image) ? (
+                        <img
+                          src={product.images?.[0]?.url || product.image}
+                          alt={product.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <Zap size={32} color={product.iconColor || '#00F59B'} />
+                      )}
                     </Link>
 
                     <div style={{ flex: 1 }}>
@@ -212,14 +222,14 @@ export const Cart = () => {
                 </span>
               </div>
 
-              <button
+              <Link
+                to="/checkout"
                 className="btn btn-primary btn-lg"
-                style={{ width: '100%' }}
-                onClick={() => alert('Order placement & payment processing will be integrated in subsequent parts.')}
+                style={{ width: '100%', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
               >
                 <span>Proceed to Checkout</span>
                 <ArrowRight size={18} />
-              </button>
+              </Link>
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '1.25rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                 <ShieldCheck size={16} color="var(--accent-mint)" />

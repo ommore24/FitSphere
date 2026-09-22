@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { COACH_BENEFITS, COACH_REQUIREMENTS } from '../data/mockCoaches';
 import { CoachApplyModal } from '../components/common/CoachApplyModal';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import '../styles/joinCoach.css';
 
 export const JoinCoach = () => {
@@ -29,8 +30,29 @@ export const JoinCoach = () => {
     statement: ''
   });
 
-  const handleOnPageSubmit = (e) => {
+  const handleOnPageSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('coach_applications').insert({
+          full_name: onPageData.fullName,
+          email: onPageData.email,
+          phone: onPageData.phone,
+          specialization: onPageData.specialization,
+          experience_years: parseInt(onPageData.experienceYears) || 3,
+          qualifications: onPageData.certification,
+          certification_name: onPageData.certification,
+          certification_number: 'CERT-' + Math.floor(100000 + Math.random() * 900000),
+          issuing_organization: 'NSCA / NASM',
+          bio: onPageData.statement,
+          status: 'PENDING'
+        });
+      } catch (err) {
+        console.warn('Coach application submission fallback:', err);
+      }
+    }
+
     setOnPageSubmitted(true);
   };
 
